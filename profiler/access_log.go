@@ -56,6 +56,7 @@ func NewAccessLogProfiler(e *echo.Echo, hostAddr string, opts ...AccessLogProfil
 }
 
 func (p *AccessLogProfiler) Start() error {
+	log.Print("[benchmark-access-log-profiler] Start")
 	cmdMv := exec.Command(
 		"sh", "-c", fmt.Sprintf("mv %s %s.`date +%%Y%%m%%d-%%H%%M%%S`", nginxAccessLog, nginxAccessLog),
 	)
@@ -71,6 +72,7 @@ func (p *AccessLogProfiler) Start() error {
 	if err != nil {
 		return fmt.Errorf("failed to nginx reopen: %s: %w", string(rotOut), err)
 	}
+	log.Printf("[benchmark-access-log-profiler] Success to rotate %s", nginxAccessLog)
 	return nil
 }
 
@@ -87,6 +89,7 @@ func (p *AccessLogProfiler) requestURL() string {
 }
 
 func (p *AccessLogProfiler) Stop() error {
+	log.Print("[benchmark-access-log-profiler] Stop")
 	b, err := json.Marshal(&AccessLogRequest{
 		FileName:          p.accessLogFileName,
 		BotName:           p.botName,
@@ -107,6 +110,7 @@ func (p *AccessLogProfiler) Stop() error {
 	if _, err := httpClient.Do(req); err != nil {
 		return fmt.Errorf("failed to post %s: %w", url, err)
 	}
+	log.Print("[benchmark-access-log-profiler] Success to POST API")
 	return nil
 }
 
