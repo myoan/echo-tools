@@ -1,4 +1,4 @@
-module github.com/goccy/echo-tools
+module github.com/myoan/echo-tools
 
 go 1.18
 
