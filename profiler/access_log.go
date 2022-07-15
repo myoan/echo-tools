@@ -136,6 +136,8 @@ func (h *AccessLogHandler) handle(ctx context.Context, body io.Reader) error {
 	if err := json.NewDecoder(body).Decode(&req); err != nil {
 		return fmt.Errorf("failed to decode access log request: %w", err)
 	}
+	log.Printf("[benchmark-access-log-profiler] Receive Request: %+v", req)
+
 	if req.FileName == "" {
 		return fmt.Errorf("failed to find access-log filename")
 	}
@@ -144,10 +146,12 @@ func (h *AccessLogHandler) handle(ctx context.Context, body io.Reader) error {
 	cmd := exec.Command(
 		"sh", "-c", fmt.Sprintf(kataribeCommandTmpl, req.FileName, req.KataribeConfPath, kataribeFile),
 	)
+	log.Printf("kataribe cmd: %s\n", fmt.Sprintf(kataribeCommandTmpl, req.FileName, req.KataribeConfPath, kataribeFile))
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		return fmt.Errorf("failed to exec kataribe: %s: %w", string(out), err)
 	}
+	log.Print("[benchmark-access-log-profiler] send to gist")
 	if req.GitHubToken == "" || req.DiscordWebhookURL == "" {
 		log.Println("github token or discord webhook url is not found")
 		return nil
