@@ -26,6 +26,7 @@ const (
 type AccessLogProfiler struct {
 	echo              *echo.Echo
 	hostAddr          string
+	kataribeConfPath  string
 	accessLogFileName string
 	botName           string
 	githubToken       string
@@ -34,8 +35,9 @@ type AccessLogProfiler struct {
 
 type AccessLogProfilerOption func(*AccessLogProfiler)
 
-func AccessLogDiscordNotifierOption(botName, webhookURL, githubToken string) AccessLogProfilerOption {
+func AccessLogDiscordNotifierOption(kataribeFile, botName, webhookURL, githubToken string) AccessLogProfilerOption {
 	return func(p *AccessLogProfiler) {
+		p.kataribeConfPath = kataribeFile
 		p.botName = botName
 		p.discordWebhookURL = webhookURL
 		p.githubToken = githubToken
@@ -78,6 +80,7 @@ func (p *AccessLogProfiler) Start() error {
 
 type AccessLogRequest struct {
 	FileName          string `json:"filename"`
+	KataribeConfPath  string `json:"kataribeConfPath"`
 	BotName           string `json:"botName"`
 	GitHubToken       string `json:"githubToken"`
 	DiscordWebhookURL string `json:"discordWebhookURL"`
@@ -92,6 +95,7 @@ func (p *AccessLogProfiler) Stop() error {
 	log.Print("[benchmark-access-log-profiler] Stop")
 	b, err := json.Marshal(&AccessLogRequest{
 		FileName:          p.accessLogFileName,
+		KataribeConfPath:  p.kataribeConfPath,
 		BotName:           p.botName,
 		GitHubToken:       p.githubToken,
 		DiscordWebhookURL: p.discordWebhookURL,
@@ -124,7 +128,7 @@ func (h *AccessLogHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 var (
-	kataribeCommandTmpl = `cat %s | kataribe > %s`
+	kataribeCommandTmpl = `cat %s | kataribe -conf %s > %s`
 )
 
 func (h *AccessLogHandler) handle(ctx context.Context, body io.Reader) error {
@@ -138,7 +142,7 @@ func (h *AccessLogHandler) handle(ctx context.Context, body io.Reader) error {
 	tempDir := os.TempDir()
 	kataribeFile := filepath.Join(tempDir, "kataribe.log")
 	cmd := exec.Command(
-		"sh", "-c", fmt.Sprintf(kataribeCommandTmpl, req.FileName, kataribeFile),
+		"sh", "-c", fmt.Sprintf(kataribeCommandTmpl, req.FileName, req.KataribeConfPath, kataribeFile),
 	)
 	out, err := cmd.CombinedOutput()
 	if err != nil {
