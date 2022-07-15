@@ -58,7 +58,7 @@ func NewAccessLogProfiler(e *echo.Echo, hostAddr string, opts ...AccessLogProfil
 func (p *AccessLogProfiler) Start() error {
 	log.Print("[benchmark-access-log-profiler] Start")
 	cmdMv := exec.Command(
-		"sh", "-c", fmt.Sprintf("mv %s %s.`date +%%Y%%m%%d-%%H%%M%%S`", nginxAccessLog, nginxAccessLog),
+		"sh", "-c", fmt.Sprintf("sudo mv %s %s.`date +%%Y%%m%%d-%%H%%M%%S`", nginxAccessLog, nginxAccessLog),
 	)
 	mvOut, err := cmdMv.CombinedOutput()
 	if err != nil {
