@@ -13,9 +13,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/goccy/echo-tools/gist"
-	"github.com/goccy/echo-tools/notifier"
 	"github.com/labstack/echo/v4"
+	"github.com/myoan/echo-tools/gist"
+	"github.com/myoan/echo-tools/notifier"
 )
 
 const (
@@ -149,6 +149,7 @@ func (h *AccessLogHandler) handle(ctx context.Context, body io.Reader) error {
 	log.Printf("kataribe cmd: %s\n", fmt.Sprintf(kataribeCommandTmpl, req.FileName, req.KataribeConfPath, kataribeFile))
 	out, err := cmd.CombinedOutput()
 	if err != nil {
+		log.Printf("failed to exec kataribe: %s: %w", string(out), err)
 		return fmt.Errorf("failed to exec kataribe: %s: %w", string(out), err)
 	}
 	log.Print("[benchmark-access-log-profiler] send to gist")
