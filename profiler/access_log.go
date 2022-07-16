@@ -128,7 +128,7 @@ func (h *AccessLogHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 var (
-	kataribeCommandTmpl = `"cat %s | kataribe -conf %s > %s"`
+	kataribeCommandTmpl = `"sudo cat %s | kataribe -conf %s > %s"`
 )
 
 func (h *AccessLogHandler) handle(ctx context.Context, body io.Reader) error {
