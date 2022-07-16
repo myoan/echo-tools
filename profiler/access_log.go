@@ -130,7 +130,8 @@ func (h *AccessLogHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 var (
 	// kataribeCommandTmpl = `hostname > %s`
 	// kataribeCommandTmpl = `"/usr/bin/kataribe -h"`
-	kataribeCommandTmpl = `cat %s | kataribe -conf %s > %s`
+	kataribeCommandTmpl = `kataribe -h > %s`
+	// kataribeCommandTmpl = `cat %s | kataribe -conf %s > %s`
 )
 
 func (h *AccessLogHandler) handle(ctx context.Context, body io.Reader) error {
