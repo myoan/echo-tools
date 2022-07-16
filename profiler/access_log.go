@@ -130,8 +130,7 @@ func (h *AccessLogHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 var (
 	// kataribeCommandTmpl = `hostname > %s`
 	// kataribeCommandTmpl = `"/usr/bin/kataribe -h"`
-	kataribeCommandTmpl = `kataribe -h &> %s`
-	// kataribeCommandTmpl = `cat %s | kataribe -conf %s > %s`
+	kataribeCommandTmpl = `cat %s | kataribe -conf %s > %s`
 )
 
 func (h *AccessLogHandler) handle(ctx context.Context, body io.Reader) error {
@@ -147,8 +146,7 @@ func (h *AccessLogHandler) handle(ctx context.Context, body io.Reader) error {
 	tempDir := os.TempDir()
 	kataribeFile := filepath.Join(tempDir, "kataribe.log")
 	cmd := exec.Command(
-		"sh", "-c", fmt.Sprintf(kataribeCommandTmpl, kataribeFile),
-		// "sh", "-c", fmt.Sprintf(kataribeCommandTmpl, req.FileName, req.KataribeConfPath, kataribeFile),
+		"sh", "-c", fmt.Sprintf(kataribeCommandTmpl, req.FileName, req.KataribeConfPath, kataribeFile),
 	)
 	log.Printf("kataribe cmd: %s\n", fmt.Sprintf(kataribeCommandTmpl, req.FileName, req.KataribeConfPath, kataribeFile))
 	out, err := cmd.CombinedOutput()
