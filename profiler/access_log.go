@@ -145,8 +145,7 @@ func (h *AccessLogHandler) handle(ctx context.Context, body io.Reader) error {
 	tempDir := os.TempDir()
 	kataribeFile := filepath.Join(tempDir, "kataribe.log")
 	cmd := exec.Command(
-		"sh", "-c", fmt.Sprintf("echo $PATH > %s", kataribeFile),
-		// "sh", "-c", fmt.Sprintf(kataribeCommandTmpl),
+		"sh", "-c", fmt.Sprintf(kataribeCommandTmpl),
 		// "sh", "-c", fmt.Sprintf(kataribeCommandTmpl, req.FileName, req.KataribeConfPath, kataribeFile),
 	)
 	log.Printf("kataribe cmd: %s\n", fmt.Sprintf(kataribeCommandTmpl, req.FileName, req.KataribeConfPath, kataribeFile))
