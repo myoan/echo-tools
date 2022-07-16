@@ -128,7 +128,7 @@ func (h *AccessLogHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 var (
-	kataribeCommandTmpl = `"hostname > %s"`
+	kataribeCommandTmpl = `hostname > %s`
 	// kataribeCommandTmpl = `"/usr/bin/kataribe -h"`
 	// kataribeCommandTmpl = `"cat %s | kataribe -conf %s > %s"`
 )
